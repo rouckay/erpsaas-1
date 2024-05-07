@@ -4,11 +4,17 @@ namespace App\Providers;
 
 use Akaunting\Money\Currency;
 use Akaunting\Money\Money;
+use App\Enums\Setting\DateFormat;
+use App\Models\Accounting\AccountSubtype;
+use App\Models\Setting\Localization;
+use App\Utilities\Accounting\AccountCode;
+use App\Utilities\Currency\CurrencyAccessor;
 use BackedEnum;
 use Closure;
 use Filament\Forms\Components\Field;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 
@@ -48,6 +54,17 @@ class MacroServiceProvider extends ServiceProvider
             return $this;
         });
 
+        TextColumn::macro('localizeDate', function (): static {
+            $localization = Localization::firstOrFail();
+
+            $dateFormat = $localization->date_format->value ?? DateFormat::DEFAULT;
+            $timezone = $localization->timezone ?? Carbon::now()->timezoneName;
+
+            $this->date($dateFormat, $timezone);
+
+            return $this;
+        });
+
         TextColumn::macro('currency', function (string | Closure | null $currency = null, ?bool $convert = null): static {
             $this->formatStateUsing(static function (TextColumn $column, $state) use ($currency, $convert): ?string {
                 if (blank($state)) {
@@ -57,7 +74,7 @@ class MacroServiceProvider extends ServiceProvider
                 $currency = $column->evaluate($currency);
                 $convert = $column->evaluate($convert);
 
-                return money($state, $currency, $convert)->formatWithCode();
+                return money($state, $currency, $convert)->format();
             });
 
             return $this;
@@ -102,6 +119,25 @@ class MacroServiceProvider extends ServiceProvider
             return $this;
         });
 
+        Field::macro('validateAccountCode', function (string | Closure | null $subtype = null): static {
+            $this
+                ->rules([
+                    fn (Field $component): Closure => static function (string $attribute, $value, Closure $fail) use ($subtype, $component) {
+                        $subtype = $component->evaluate($subtype);
+                        $chartSubtype = AccountSubtype::find($subtype);
+                        $type = $chartSubtype->type;
+
+                        if (! AccountCode::isValidCode($value, $type)) {
+                            $message = AccountCode::getMessage($type);
+
+                            $fail($message);
+                        }
+                    },
+                ]);
+
+            return $this;
+        });
+
         TextColumn::macro('rate', function (string | Closure | null $computation = null): static {
             $this->formatStateUsing(static function (TextColumn $column, $state) use ($computation): ?string {
                 $computation = $column->evaluate($computation);
@@ -122,30 +158,32 @@ class MacroServiceProvider extends ServiceProvider
 
         Money::macro('swapAmountFor', function ($newCurrency) {
             $oldCurrency = $this->currency->getCurrency();
-            $balance = $this->getAmount();
+            $balanceInMajorUnits = $this->getAmount();
 
             $oldRate = currency($oldCurrency)->getRate();
             $newRate = currency($newCurrency)->getRate();
 
             $ratio = $newRate / $oldRate;
 
-            $convertedBalance = money($balance, $oldCurrency)->multiply($ratio)->getAmount();
+            $convertedBalance = bcmul($balanceInMajorUnits, $ratio, 2);
 
-            return (int) filter_var($convertedBalance, FILTER_SANITIZE_NUMBER_INT);
+            return (int) round($convertedBalance);
         });
 
-        Money::macro('formatWithCode', function () {
-            $formatted = $this->formatSimple();
-
-            $isSymbolFirst = $this->currency->isSymbolFirst();
+        Money::macro('formatWithCode', function (bool $codeBefore = false) {
+            $formatted = $this->format();
 
             $currencyCode = $this->currency->getCurrency();
 
-            if ($isSymbolFirst) {
-                return $formatted . ' ' . $currencyCode;
+            if ($currencyCode === CurrencyAccessor::getDefaultCurrency()) {
+                return $formatted;
             }
 
-            return $currencyCode . ' ' . $formatted;
+            if ($codeBefore) {
+                return $currencyCode . ' ' . $formatted;
+            }
+
+            return $formatted . ' ' . $currencyCode;
         });
 
         Currency::macro('getEntity', function () {

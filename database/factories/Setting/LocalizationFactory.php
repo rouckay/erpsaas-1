@@ -2,10 +2,10 @@
 
 namespace Database\Factories\Setting;
 
-use App\Enums\DateFormat;
-use App\Enums\NumberFormat;
-use App\Enums\TimeFormat;
-use App\Enums\WeekStart;
+use App\Enums\Setting\DateFormat;
+use App\Enums\Setting\NumberFormat;
+use App\Enums\Setting\TimeFormat;
+use App\Enums\Setting\WeekStart;
 use App\Models\Setting\Localization;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -47,8 +47,8 @@ class LocalizationFactory extends Factory
             'number_format' => $number_format,
             'percent_first' => $percent_first,
             'week_start' => $week_start,
-            'fiscal_year_start' => now()->startOfYear()->toDateString(),
-            'fiscal_year_end' => now()->endOfYear()->toDateString(),
+            'fiscal_year_end_month' => 12,
+            'fiscal_year_end_day' => 31,
         ]);
     }
 }

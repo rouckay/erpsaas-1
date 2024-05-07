@@ -36,10 +36,9 @@ class AuthServiceProvider extends ServiceProvider
     {
         $models = [
             Setting\Currency::class,
-            Setting\Category::class,
             Setting\Discount::class,
             Setting\Tax::class,
-            Banking\Account::class,
+            Banking\BankAccount::class,
         ];
 
         foreach ($models as $model) {

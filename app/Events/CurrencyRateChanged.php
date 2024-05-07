@@ -15,11 +15,17 @@ class CurrencyRateChanged
 
     public Currency $currency;
 
+    public float $oldRate;
+
+    public float $newRate;
+
     /**
      * Create a new event instance.
      */
-    public function __construct(Currency $currency)
+    public function __construct(Currency $currency, float $oldRate, float $newRate)
     {
         $this->currency = $currency;
+        $this->oldRate = $oldRate;
+        $this->newRate = $newRate;
     }
 }

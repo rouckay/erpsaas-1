@@ -3,20 +3,18 @@
 namespace App\Models\Setting;
 
 use App\Casts\RateCast;
-use App\Enums\DiscountComputation;
-use App\Enums\DiscountScope;
-use App\Enums\DiscountType;
-use App\Traits\Blamable;
-use App\Traits\CompanyOwned;
-use App\Traits\HasDefault;
-use App\Traits\SyncsWithCompanyDefaults;
+use App\Concerns\Blamable;
+use App\Concerns\CompanyOwned;
+use App\Concerns\HasDefault;
+use App\Concerns\SyncsWithCompanyDefaults;
+use App\Enums\Setting\DiscountComputation;
+use App\Enums\Setting\DiscountScope;
+use App\Enums\Setting\DiscountType;
 use Database\Factories\Setting\DiscountFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Wallo\FilamentCompanies\FilamentCompanies;
 
 class Discount extends Model
 {
@@ -53,11 +51,6 @@ class Discount extends Model
         'enabled' => 'boolean',
     ];
 
-    public function company(): BelongsTo
-    {
-        return $this->belongsTo(FilamentCompanies::companyModel(), 'company_id');
-    }
-
     public function defaultSalesDiscount(): HasOne
     {
         return $this->hasOne(CompanyDefault::class, 'sales_discount_id');
@@ -66,16 +59,6 @@ class Discount extends Model
     public function defaultPurchaseDiscount(): HasOne
     {
         return $this->hasOne(CompanyDefault::class, 'purchase_discount_id');
-    }
-
-    public function createdBy(): BelongsTo
-    {
-        return $this->belongsTo(FilamentCompanies::userModel(), 'created_by');
-    }
-
-    public function updatedBy(): BelongsTo
-    {
-        return $this->belongsTo(FilamentCompanies::userModel(), 'updated_by');
     }
 
     protected static function newFactory(): Factory

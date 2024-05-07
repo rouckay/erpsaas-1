@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
+use App\Concerns\SyncsWithCompanyDefaults;
 use App\Models\User;
-use App\Traits\SyncsWithCompanyDefaults;
 use Illuminate\Database\Eloquent\Model;
 
 class DefaultEnabledRecordPolicy

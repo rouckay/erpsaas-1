@@ -5,18 +5,13 @@ namespace App\Filament\Company\Pages\Service;
 use App\Facades\Forex;
 use App\Models\Service\CurrencyList;
 use App\Models\Setting\Currency;
-use Filament\Facades\Filament;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
 use Livewire\Attributes\Url;
 
 class LiveCurrency extends Page
 {
-    protected static ?string $navigationIcon = 'icon-currency-exchange';
-
     protected static ?string $title = 'Live Currency';
-
-    protected static ?string $navigationGroup = 'Services';
 
     protected static ?string $slug = 'services/live-currency';
 
@@ -33,15 +28,6 @@ class LiveCurrency extends Page
     public static function getNavigationLabel(): string
     {
         return translate(static::$title);
-    }
-
-    public static function getNavigationParentItem(): ?string
-    {
-        if (Filament::hasTopNavigation()) {
-            return translate('Banking');
-        }
-
-        return null;
     }
 
     public static function shouldRegisterNavigation(): bool

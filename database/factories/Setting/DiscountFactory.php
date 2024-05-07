@@ -2,9 +2,9 @@
 
 namespace Database\Factories\Setting;
 
-use App\Enums\DiscountComputation;
-use App\Enums\DiscountScope;
-use App\Enums\DiscountType;
+use App\Enums\Setting\DiscountComputation;
+use App\Enums\Setting\DiscountScope;
+use App\Enums\Setting\DiscountType;
 use App\Models\Setting\Discount;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

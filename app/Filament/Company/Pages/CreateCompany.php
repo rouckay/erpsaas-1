@@ -2,7 +2,7 @@
 
 namespace App\Filament\Company\Pages;
 
-use App\Enums\EntityType;
+use App\Enums\Setting\EntityType;
 use App\Events\CompanyGenerated;
 use App\Models\Company;
 use App\Models\Locale\Country;

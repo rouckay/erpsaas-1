@@ -2,14 +2,15 @@
 
 namespace App\Utilities\Localization;
 
-use App\Enums\TimeFormat;
+use App\Enums\Setting\TimeFormat;
 use App\Models\Setting\Localization;
 use DateTimeZone;
+use IntlTimeZone;
 use Symfony\Component\Intl\Timezones;
 
 class Timezone
 {
-    public static function getTimezoneOptions(#[\SensitiveParameter] ?string $countryCode = null): array
+    public static function getTimezoneOptions(?string $countryCode = null): array
     {
         if (empty($countryCode)) {
             return [];
@@ -26,7 +27,8 @@ class Timezone
         $results = [];
 
         foreach ($countryTimezones as $timezoneIdentifier) {
-            $translatedName = $localizedTimezoneNames[$timezoneIdentifier] ?? $timezoneIdentifier;
+            $timezoneConical = IntlTimeZone::getCanonicalID($timezoneIdentifier);
+            $translatedName = $localizedTimezoneNames[$timezoneConical] ?? $timezoneConical;
             $cityName = self::extractCityName($translatedName);
             $localTime = self::getLocalTime($timezoneIdentifier);
             $timezoneAbbreviation = now($timezoneIdentifier)->format('T');

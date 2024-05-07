@@ -2,12 +2,12 @@
 
 namespace App\Models\Setting;
 
-use App\Enums\EntityType;
+use App\Concerns\Blamable;
+use App\Concerns\CompanyOwned;
+use App\Enums\Setting\EntityType;
 use App\Models\Locale\City;
 use App\Models\Locale\Country;
 use App\Models\Locale\State;
-use App\Traits\Blamable;
-use App\Traits\CompanyOwned;
 use Database\Factories\Setting\CompanyProfileFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
-use Wallo\FilamentCompanies\FilamentCompanies;
 
 class CompanyProfile extends Model
 {
@@ -52,13 +51,12 @@ class CompanyProfile extends Model
     protected function logoUrl(): Attribute
     {
         return Attribute::get(static function (mixed $value, array $attributes): ?string {
-            return $attributes['logo'] ? Storage::disk('public')->url($attributes['logo']) : null;
-        });
-    }
+            if ($attributes['logo']) {
+                return Storage::disk('public')->url($attributes['logo']);
+            }
 
-    public function company(): BelongsTo
-    {
-        return $this->belongsTo(FilamentCompanies::companyModel(), 'company_id');
+            return null;
+        });
     }
 
     public function country(): BelongsTo
@@ -74,16 +72,6 @@ class CompanyProfile extends Model
     public function state(): BelongsTo
     {
         return $this->belongsTo(State::class, 'state_id', 'id');
-    }
-
-    public function createdBy(): BelongsTo
-    {
-        return $this->belongsTo(FilamentCompanies::userModel(), 'created_by');
-    }
-
-    public function updatedBy(): BelongsTo
-    {
-        return $this->belongsTo(FilamentCompanies::userModel(), 'updated_by');
     }
 
     public function getCountryName(): string

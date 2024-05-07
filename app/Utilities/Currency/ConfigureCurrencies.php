@@ -38,6 +38,7 @@ class ConfigureCurrencies
         $customCurrencies = [];
 
         foreach ($currencies as $currency) {
+            /** @var CurrencyModel $currency */
             $customCurrencies[$currency->code] = [
                 'name' => $currency->name,
                 'rate' => $currency->rate,
@@ -60,7 +61,7 @@ class ConfigureCurrencies
             try {
                 $name = Currencies::getName($code, app()->getLocale());
                 $existingCurrencies[$code]['name'] = ucwords($name);
-            } catch (MissingResourceException $e) {
+            } catch (MissingResourceException) {
                 $existingCurrencies[$code]['name'] = $currency['name'];
             }
         }

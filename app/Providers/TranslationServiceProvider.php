@@ -26,46 +26,19 @@ class TranslationServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Field::macro('localizeLabel', function (string | Htmlable | Closure | null $customLabel = null): static {
-            if (filled($customLabel)) {
-                $label = $customLabel;
-            } else {
-                $label = $this->getLabel();
-
-                if (str_ends_with($label, ' id')) {
-                    $label = str_replace(' id', '', $label);
-                }
-
-                $label = ucwords($label);
-            }
-
-            $this->label(translate($label));
-
-            return $this;
+            return TranslationServiceProvider::localizeLabelGeneric($this, $customLabel);
         });
 
         Column::macro('localizeLabel', function (string | Htmlable | Closure | null $customLabel = null): static {
-            if (filled($customLabel)) {
-                $label = $customLabel;
-            } else {
-                $label = $this->getLabel();
-
-                if (str_ends_with($label, ' id')) {
-                    $label = str_replace(' id', '', $label);
-                }
-
-                $label = ucwords($label);
-            }
-
-            $this->label(translate($label));
-
-            return $this;
+            return TranslationServiceProvider::localizeLabelGeneric($this, $customLabel);
         });
 
         NavigationGroup::macro('localizeLabel', function () {
             $label = $this->getLabel();
 
-            if ($label !== 'HR' && filled($label)) {
-                $this->label(translate($label));
+            if (filled($label)) {
+                $translatedLabel = translate($label);
+                $this->label(ucfirst($translatedLabel));
             }
 
             return $this;
@@ -74,9 +47,30 @@ class TranslationServiceProvider extends ServiceProvider
         Tab::macro('localizeLabel', function () {
             $label = $this->getLabel();
 
-            $this->label(ucfirst(translate($label)));
+            if (filled($label)) {
+                $translatedLabel = translate($label);
+                $this->label(ucfirst($translatedLabel));
+            }
 
             return $this;
         });
+    }
+
+    public static function localizeLabelGeneric($object, string | Htmlable | Closure | null $customLabel = null)
+    {
+        $label = filled($customLabel) ? $customLabel : static::processedLabel($object->getLabel());
+
+        $object->label(translate($label));
+
+        return $object;
+    }
+
+    public static function processedLabel(Htmlable | null | string $label): string
+    {
+        if (str_ends_with($label, ' id')) {
+            $label = str_replace(' id', '', $label);
+        }
+
+        return ucwords($label);
     }
 }

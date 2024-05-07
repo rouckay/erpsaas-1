@@ -2,7 +2,7 @@
 
 namespace Database\Factories\Setting;
 
-use App\Enums\EntityType;
+use App\Enums\Setting\EntityType;
 use App\Faker\PhoneNumber;
 use App\Faker\State;
 use App\Models\Setting\CompanyProfile;

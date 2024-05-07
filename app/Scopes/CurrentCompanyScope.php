@@ -15,7 +15,7 @@ class CurrentCompanyScope implements Scope
     public function apply(Builder $builder, Model $model): void
     {
         if (Auth::check() && Auth::user()->currentCompany) {
-            $builder->where('company_id', Auth::user()->currentCompany->id);
+            $builder->where("{$model->getTable()}.company_id", Auth::user()->currentCompany->id);
         }
     }
 }

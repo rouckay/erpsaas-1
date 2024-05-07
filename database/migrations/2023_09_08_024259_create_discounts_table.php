@@ -1,7 +1,7 @@
 <?php
 
-use App\Enums\Setting\DiscountComputation;
-use App\Enums\Setting\DiscountType;
+use App\Enums\DiscountComputation;
+use App\Enums\DiscountType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

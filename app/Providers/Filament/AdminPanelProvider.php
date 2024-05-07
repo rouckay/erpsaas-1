@@ -2,8 +2,7 @@
 
 namespace App\Providers\Filament;
 
-use App\Http\Middleware\Authenticate;
-use Exception;
+use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages;
@@ -21,14 +20,12 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
 {
-    /**
-     * @throws Exception
-     */
     public function panel(Panel $panel): Panel
     {
         return $panel
             ->id('admin')
             ->path('admin')
+            ->login()
             ->colors([
                 'primary' => Color::Amber,
             ])

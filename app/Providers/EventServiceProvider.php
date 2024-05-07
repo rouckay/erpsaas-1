@@ -8,17 +8,17 @@ use App\Events\CompanyDefaultUpdated;
 use App\Events\CompanyGenerated;
 use App\Events\CurrencyRateChanged;
 use App\Events\DefaultCurrencyChanged;
-use App\Events\PlaidSuccess;
-use App\Events\StartTransactionImport;
-use App\Listeners\ConfigureChartOfAccounts;
 use App\Listeners\ConfigureCompanyDefault;
+use App\Listeners\ConfigureCompanyNavigation;
 use App\Listeners\CreateCompanyDefaults;
-use App\Listeners\CreateConnectedAccount;
-use App\Listeners\HandleTransactionImport;
 use App\Listeners\SyncAssociatedModels;
 use App\Listeners\SyncWithCompanyDefaults;
 use App\Listeners\UpdateAccountBalances;
 use App\Listeners\UpdateCurrencyRates;
+use App\Models\Banking\Account;
+use App\Models\Setting\Currency;
+use App\Observers\AccountObserver;
+use App\Observers\CurrencyObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -42,22 +42,16 @@ class EventServiceProvider extends ServiceProvider
         ],
         CompanyConfigured::class => [
             ConfigureCompanyDefault::class,
+            ConfigureCompanyNavigation::class,
         ],
         CompanyGenerated::class => [
             CreateCompanyDefaults::class,
-            ConfigureChartOfAccounts::class,
         ],
         DefaultCurrencyChanged::class => [
             UpdateCurrencyRates::class,
         ],
         CurrencyRateChanged::class => [
             UpdateAccountBalances::class,
-        ],
-        PlaidSuccess::class => [
-            CreateConnectedAccount::class,
-        ],
-        StartTransactionImport::class => [
-            HandleTransactionImport::class,
         ],
     ];
 
@@ -67,7 +61,8 @@ class EventServiceProvider extends ServiceProvider
      * @var array<string, string|object|array<int, string|object>>
      */
     protected $observers = [
-        // Currency::class => [CurrencyObserver::class],
+        Currency::class => [CurrencyObserver::class],
+        Account::class => [AccountObserver::class],
     ];
 
     /**

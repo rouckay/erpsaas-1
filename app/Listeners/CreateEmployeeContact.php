@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Enums\Common\ContactType;
+use App\Enums\ContactType;
 use Wallo\FilamentCompanies\Events\CompanyEmployeeAdded;
 
 class CreateEmployeeContact

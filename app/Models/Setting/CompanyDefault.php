@@ -2,16 +2,18 @@
 
 namespace App\Models\Setting;
 
-use App\Concerns\Blamable;
-use App\Concerns\CompanyOwned;
-use App\Enums\Setting\DiscountType;
-use App\Enums\Setting\TaxType;
-use App\Models\Banking\BankAccount;
+use App\Enums\CategoryType;
+use App\Enums\DiscountType;
+use App\Enums\TaxType;
+use App\Models\Banking\Account;
+use App\Traits\Blamable;
+use App\Traits\CompanyOwned;
 use Database\Factories\Setting\CompanyDefaultFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Wallo\FilamentCompanies\FilamentCompanies;
 
 class CompanyDefault extends Model
 {
@@ -23,19 +25,26 @@ class CompanyDefault extends Model
 
     protected $fillable = [
         'company_id',
-        'bank_account_id',
+        'account_id',
         'currency_code',
         'sales_tax_id',
         'purchase_tax_id',
         'sales_discount_id',
         'purchase_discount_id',
+        'income_category_id',
+        'expense_category_id',
         'created_by',
         'updated_by',
     ];
 
-    public function bankAccount(): BelongsTo
+    public function company(): BelongsTo
     {
-        return $this->belongsTo(BankAccount::class, 'bank_account_id');
+        return $this->belongsTo(FilamentCompanies::companyModel(), 'company_id');
+    }
+
+    public function account(): BelongsTo
+    {
+        return $this->belongsTo(Account::class, 'account_id');
     }
 
     public function currency(): BelongsTo
@@ -65,6 +74,28 @@ class CompanyDefault extends Model
     {
         return $this->belongsTo(Discount::class, 'purchase_discount_id', 'id')
             ->where('type', DiscountType::Purchase);
+    }
+
+    public function incomeCategory(): BelongsTo
+    {
+        return $this->belongsTo(Category::class, 'income_category_id', 'id')
+            ->where('type', CategoryType::Income);
+    }
+
+    public function expenseCategory(): BelongsTo
+    {
+        return $this->belongsTo(Category::class, 'expense_category_id', 'id')
+            ->where('type', CategoryType::Expense);
+    }
+
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(FilamentCompanies::userModel(), 'created_by');
+    }
+
+    public function updatedBy(): BelongsTo
+    {
+        return $this->belongsTo(FilamentCompanies::userModel(), 'updated_by');
     }
 
     protected static function newFactory(): Factory

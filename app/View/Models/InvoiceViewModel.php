@@ -2,8 +2,8 @@
 
 namespace App\View\Models;
 
-use App\Enums\Setting\Font;
-use App\Enums\Setting\PaymentTerms;
+use App\Enums\Font;
+use App\Enums\PaymentTerms;
 use App\Models\Setting\DocumentDefault;
 use Filament\Panel\Concerns\HasFont;
 

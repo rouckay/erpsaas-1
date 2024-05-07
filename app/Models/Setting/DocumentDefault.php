@@ -3,12 +3,12 @@
 namespace App\Models\Setting;
 
 use App\Casts\TrimLeadingZeroCast;
-use App\Concerns\Blamable;
-use App\Concerns\CompanyOwned;
-use App\Enums\Setting\DocumentType;
-use App\Enums\Setting\Font;
-use App\Enums\Setting\PaymentTerms;
-use App\Enums\Setting\Template;
+use App\Enums\DocumentType;
+use App\Enums\Font;
+use App\Enums\PaymentTerms;
+use App\Enums\Template;
+use App\Traits\Blamable;
+use App\Traits\CompanyOwned;
 use Database\Factories\Setting\DocumentDefaultFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
@@ -16,7 +16,9 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
+use Wallo\FilamentCompanies\FilamentCompanies;
 
 class DocumentDefault extends Model
 {
@@ -71,6 +73,21 @@ class DocumentDefault extends Model
         return Attribute::get(static function (mixed $value, array $attributes): ?string {
             return $attributes['logo'] ? Storage::disk('public')->url($attributes['logo']) : null;
         });
+    }
+
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(FilamentCompanies::companyModel(), 'company_id');
+    }
+
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(FilamentCompanies::userModel(), 'created_by');
+    }
+
+    public function updatedBy(): BelongsTo
+    {
+        return $this->belongsTo(FilamentCompanies::userModel(), 'updated_by');
     }
 
     public function scopeType(Builder $query, string | DocumentType $type): Builder

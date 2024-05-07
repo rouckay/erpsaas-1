@@ -2,7 +2,7 @@
 
 namespace Database\Factories\Setting;
 
-use App\Enums\Setting\DocumentType;
+use App\Enums\DocumentType;
 use App\Models\Setting\DocumentDefault;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

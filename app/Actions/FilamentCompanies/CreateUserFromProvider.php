@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\DB;
 use Laravel\Socialite\Contracts\User as ProviderUserContract;
 use Wallo\FilamentCompanies\Contracts\CreatesConnectedAccounts;
 use Wallo\FilamentCompanies\Contracts\CreatesUserFromProvider;
-use Wallo\FilamentCompanies\Enums\Feature;
-use Wallo\FilamentCompanies\FilamentCompanies;
+use Wallo\FilamentCompanies\Features;
+use Wallo\FilamentCompanies\Socialite;
 
 class CreateUserFromProvider implements CreatesUserFromProvider
 {
@@ -53,8 +53,8 @@ class CreateUserFromProvider implements CreatesUserFromProvider
 
     private function shouldSetProfilePhoto(ProviderUserContract $providerUser): bool
     {
-        return Feature::ProviderAvatars->isEnabled() &&
-            FilamentCompanies::managesProfilePhotos() &&
+        return Socialite::hasProviderAvatarsFeature() &&
+            Features::managesProfilePhotos() &&
             $providerUser->getAvatar();
     }
 

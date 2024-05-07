@@ -2,8 +2,6 @@
 
 namespace App\Providers;
 
-use App\Contracts\AccountHandler;
-use App\Services\AccountService;
 use BezhanSalleh\PanelSwitch\PanelSwitch;
 use Filament\Notifications\Livewire\Notifications;
 use Filament\Support\Assets\Js;
@@ -13,13 +11,6 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * All of the container bindings that should be registered.
-     */
-    public array $bindings = [
-        AccountHandler::class => AccountService::class,
-    ];
-
     /**
      * Register any application services.
      */
@@ -38,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
         $this->configurePanelSwitch();
 
         FilamentAsset::register([
-            Js::make('TopNavigation', __DIR__ . '/../../resources/js/TopNavigation.js'),
+            Js::make('top-navigation', __DIR__ . '/../../resources/js/top-navigation.js'),
         ]);
     }
 

@@ -3,18 +3,20 @@
 namespace App\Models\Setting;
 
 use App\Casts\RateCast;
-use App\Concerns\Blamable;
-use App\Concerns\CompanyOwned;
-use App\Concerns\HasDefault;
-use App\Concerns\SyncsWithCompanyDefaults;
-use App\Enums\Setting\TaxComputation;
-use App\Enums\Setting\TaxScope;
-use App\Enums\Setting\TaxType;
+use App\Enums\TaxComputation;
+use App\Enums\TaxScope;
+use App\Enums\TaxType;
+use App\Traits\Blamable;
+use App\Traits\CompanyOwned;
+use App\Traits\HasDefault;
+use App\Traits\SyncsWithCompanyDefaults;
 use Database\Factories\Setting\TaxFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Wallo\FilamentCompanies\FilamentCompanies;
 
 class Tax extends Model
 {
@@ -47,6 +49,11 @@ class Tax extends Model
         'enabled' => 'boolean',
     ];
 
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(FilamentCompanies::companyModel(), 'company_id');
+    }
+
     public function defaultSalesTax(): HasOne
     {
         return $this->hasOne(CompanyDefault::class, 'sales_tax_id');
@@ -55,6 +62,16 @@ class Tax extends Model
     public function defaultPurchaseTax(): HasOne
     {
         return $this->hasOne(CompanyDefault::class, 'purchase_tax_id');
+    }
+
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(FilamentCompanies::userModel(), 'created_by');
+    }
+
+    public function updatedBy(): BelongsTo
+    {
+        return $this->belongsTo(FilamentCompanies::userModel(), 'updated_by');
     }
 
     protected static function newFactory(): Factory

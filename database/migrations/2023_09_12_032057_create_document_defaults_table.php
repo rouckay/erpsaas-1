@@ -1,8 +1,8 @@
 <?php
 
-use App\Enums\Setting\Font;
-use App\Enums\Setting\PaymentTerms;
-use App\Enums\Setting\Template;
+use App\Enums\Font;
+use App\Enums\PaymentTerms;
+use App\Enums\Template;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

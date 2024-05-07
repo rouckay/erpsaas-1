@@ -22,6 +22,7 @@ class ChildrenRelationManager extends RelationManager
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->localizeLabel()
+                    ->autofocus()
                     ->required()
                     ->maxLength(100),
                 Forms\Components\Select::make('manager_id')
@@ -39,7 +40,10 @@ class ChildrenRelationManager extends RelationManager
                     ->searchable()
                     ->preload()
                     ->nullable(),
-                Forms\Components\MarkdownEditor::make('description')->required(),
+                Forms\Components\Textarea::make('description')
+                    ->localizeLabel()
+                    ->autosize()
+                    ->nullable(),
             ]);
     }
 

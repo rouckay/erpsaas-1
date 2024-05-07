@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use App\Enums\Setting\DocumentType;
-use App\Models\Accounting\AccountSubtype;
-use App\Models\Banking\BankAccount;
-use App\Models\Banking\ConnectedBankAccount;
+use App\Enums\DocumentType;
+use App\Models\Banking\Account;
 use App\Models\Common\Contact;
 use App\Models\Core\Department;
+use App\Models\History\AccountHistory;
 use App\Models\Setting\Appearance;
+use App\Models\Setting\Category;
 use App\Models\Setting\CompanyDefault;
 use App\Models\Setting\CompanyProfile;
 use App\Models\Setting\Currency;
@@ -64,19 +64,14 @@ class Company extends FilamentCompaniesCompany implements HasAvatar
         return $this->profile->logo_url ?? $this->owner->profile_photo_url;
     }
 
-    public function connectedBankAccounts(): HasMany
-    {
-        return $this->hasMany(ConnectedBankAccount::class, 'company_id');
-    }
-
     public function accounts(): HasMany
     {
-        return $this->hasMany(Accounting\Account::class, 'company_id');
+        return $this->hasMany(Account::class, 'company_id');
     }
 
-    public function bankAccounts(): HasMany
+    public function accountHistories(): HasMany
     {
-        return $this->hasMany(BankAccount::class, 'company_id');
+        return $this->hasMany(AccountHistory::class, 'company_id');
     }
 
     public function appearance(): HasOne
@@ -84,10 +79,9 @@ class Company extends FilamentCompaniesCompany implements HasAvatar
         return $this->hasOne(Appearance::class, 'company_id');
     }
 
-    public function accountSubtypes(): HasMany
+    public function categories(): HasMany
     {
-        return $this->hasMany(AccountSubtype::class, 'company_id');
-
+        return $this->hasMany(Category::class, 'company_id');
     }
 
     public function contacts(): HasMany
@@ -140,10 +134,5 @@ class Company extends FilamentCompaniesCompany implements HasAvatar
     public function taxes(): HasMany
     {
         return $this->hasMany(Tax::class, 'company_id');
-    }
-
-    public function transactions(): HasMany
-    {
-        return $this->hasMany(Accounting\Transaction::class, 'company_id');
     }
 }

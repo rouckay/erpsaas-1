@@ -5,6 +5,7 @@ namespace App\Filament\Company\Resources\Core;
 use App\Filament\Company\Resources\Core\DepartmentResource\Pages;
 use App\Filament\Company\Resources\Core\DepartmentResource\RelationManagers\ChildrenRelationManager;
 use App\Models\Core\Department;
+use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -18,6 +19,10 @@ class DepartmentResource extends Resource
 
     protected static ?string $modelLabel = 'Department';
 
+    protected static ?string $navigationIcon = 'heroicon-o-square-3-stack-3d';
+
+    protected static ?string $navigationGroup = 'HR';
+
     protected static ?string $slug = 'hr/departments';
 
     public static function getModelLabel(): string
@@ -25,6 +30,15 @@ class DepartmentResource extends Resource
         $modelLabel = static::$modelLabel;
 
         return translate($modelLabel);
+    }
+
+    public static function getNavigationParentItem(): ?string
+    {
+        if (Filament::hasTopNavigation()) {
+            return 'HR';
+        }
+
+        return null;
     }
 
     public static function form(Form $form): Form

@@ -43,11 +43,7 @@ class ListCompanyCurrencies extends Component implements HasForms, HasTable
                             'Record' => $this->getTableModelLabel(),
                         ]);
 
-                        if ($record->isEnabled()) {
-                            return $tooltipMessage;
-                        }
-
-                        return null;
+                        return $record->isEnabled() ? $tooltipMessage : null;
                     })
                     ->iconPosition(IconPosition::After)
                     ->sortable()

@@ -2,7 +2,7 @@
 
 namespace App\Casts;
 
-use App\Enums\Setting\NumberFormat;
+use App\Enums\NumberFormat;
 use App\Models\Setting\Localization;
 use App\Utilities\Currency\CurrencyAccessor;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;

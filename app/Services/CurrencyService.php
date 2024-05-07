@@ -76,31 +76,19 @@ class CurrencyService implements CurrencyHandler
         $filteredCurrencies = array_keys($filteredRates);
         $missingCurrencies = array_diff($targetCurrencies, $filteredCurrencies);
 
-        if (filled($missingCurrencies)) {
-            return null;
-        }
-
-        return $filteredRates;
+        return filled($missingCurrencies) ? null : $filteredRates;
     }
 
     public function getCachedExchangeRates(string $baseCurrency, array $targetCurrencies): ?array
     {
-        if ($this->isEnabled()) {
-            return $this->getExchangeRates($baseCurrency, $targetCurrencies);
-        }
-
-        return null;
+        return $this->isEnabled() ? $this->getExchangeRates($baseCurrency, $targetCurrencies) : null;
     }
 
     public function getCachedExchangeRate(string $baseCurrency, string $targetCurrency): ?float
     {
         $rates = $this->getCachedExchangeRates($baseCurrency, [$targetCurrency]);
 
-        if (isset($rates[$targetCurrency])) {
-            return (float) $rates[$targetCurrency];
-        }
-
-        return null;
+        return isset($rates[$targetCurrency]) ? (float) $rates[$targetCurrency] : null;
     }
 
     public function updateCurrencyRatesCache(string $baseCurrency): ?array

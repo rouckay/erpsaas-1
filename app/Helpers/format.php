@@ -1,6 +1,6 @@
 <?php
 
-use App\Enums\Setting\NumberFormat;
+use App\Enums\NumberFormat;
 use App\Models\Setting\Localization;
 use Filament\Support\RawJs;
 

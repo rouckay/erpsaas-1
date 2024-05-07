@@ -3,24 +3,24 @@
 namespace App\Models\Setting;
 
 use App\Casts\CurrencyRateCast;
-use App\Concerns\Blamable;
-use App\Concerns\CompanyOwned;
-use App\Concerns\HasDefault;
-use App\Concerns\SyncsWithCompanyDefaults;
 use App\Facades\Forex;
-use App\Models\Accounting\Account;
-use App\Observers\CurrencyObserver;
+use App\Models\Banking\Account;
+use App\Models\History\AccountHistory;
+use App\Traits\Blamable;
+use App\Traits\CompanyOwned;
+use App\Traits\HasDefault;
+use App\Traits\SyncsWithCompanyDefaults;
 use App\Utilities\Currency\CurrencyAccessor;
 use Database\Factories\Setting\CurrencyFactory;
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Wallo\FilamentCompanies\FilamentCompanies;
 
-#[ObservedBy(CurrencyObserver::class)]
 class Currency extends Model
 {
     use Blamable;
@@ -70,6 +70,11 @@ class Currency extends Model
         });
     }
 
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(FilamentCompanies::companyModel(), 'company_id');
+    }
+
     public function defaultCurrency(): HasOne
     {
         return $this->hasOne(CompanyDefault::class, 'currency_code', 'code');
@@ -78,6 +83,21 @@ class Currency extends Model
     public function accounts(): HasMany
     {
         return $this->hasMany(Account::class, 'currency_code', 'code');
+    }
+
+    public function accountHistories(): HasMany
+    {
+        return $this->hasMany(AccountHistory::class, 'currency_code', 'code');
+    }
+
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(FilamentCompanies::userModel(), 'created_by');
+    }
+
+    public function updatedBy(): BelongsTo
+    {
+        return $this->belongsTo(FilamentCompanies::userModel(), 'updated_by');
     }
 
     protected static function newFactory(): Factory

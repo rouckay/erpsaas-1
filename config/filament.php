@@ -1,6 +1,9 @@
 <?php
 
 return [
+    'tenant' => [
+        'ownershipRelationship' => 'organization', // Change this to your relationship name
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -13,7 +16,10 @@ return [
     | This will allow your users to receive real-time notifications.
     |
     */
-
+    'resources' => [
+        \App\Filament\Company\Resources\StaffResource::class,
+        // other resources
+    ],
     'broadcasting' => [
 
         // 'echo' => [

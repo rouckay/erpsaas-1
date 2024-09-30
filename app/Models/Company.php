@@ -58,7 +58,10 @@ class Company extends FilamentCompaniesCompany implements HasAvatar
         'updated' => CompanyUpdated::class,
         'deleted' => CompanyDeleted::class,
     ];
-
+    public function staff()
+    {
+        return $this->hasMany(Staff::class);
+    }
     public function getFilamentAvatarUrl(): ?string
     {
         return $this->profile->logo_url ?? $this->owner->profile_photo_url;

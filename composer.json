@@ -18,6 +18,7 @@
         "awcodes/filament-table-repeater": "^3.0",
         "barryvdh/laravel-snappy": "^1.0",
         "bezhansalleh/filament-panel-switch": "^1.0",
+        "eightynine/filament-excel-import": "^3.1",
         "filament/filament": "^3.2.29",
         "guava/filament-clusters": "^1.1",
         "guzzlehttp/guzzle": "^7.8",
